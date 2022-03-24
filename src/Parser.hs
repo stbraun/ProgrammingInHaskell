@@ -156,8 +156,8 @@ nats = do symbol "["
 
 -- expr   ::= term ( + expr | - expr | eps)
 -- term   ::= factor ( * term | / term | eps)
--- factor ::= ( expr ) | nat
--- nat    ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+-- factor ::= ( expr ) | int
+-- int    ::= ... | -2 | -1| 0 | 1 | 2 | ...
 
 expr :: Parser Int
 expr = do t <- term
@@ -175,8 +175,8 @@ term = do f <- factor
              t <- term
              return (f * t)
             <|> do symbol "/"
-                   e <- expr
-                   return (f `div` e)
+                   t <- term
+                   return (f `div` t)
                   <|> return f
 
 factor :: Parser Int
@@ -184,7 +184,7 @@ factor = do symbol "("
             e <- expr
             symbol ")"
             return e
-           <|> natural
+           <|> integer
 
 eval' :: String -> Int
 eval' xs = case (parse expr xs) of
