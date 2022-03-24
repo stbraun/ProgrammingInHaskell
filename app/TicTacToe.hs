@@ -6,7 +6,7 @@ import Data.Char
 import Data.List
 import System.IO
 
-import Life (cls, goto)
+import Lib (cls, goto)
 
 -- size of the grid
 size :: Int

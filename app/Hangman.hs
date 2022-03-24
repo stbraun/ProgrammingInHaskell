@@ -2,6 +2,7 @@ module Hangman where
 
 import System.IO
 
+import Lib (getCh)
 
 hangman :: IO ()
 hangman = do
@@ -24,15 +25,6 @@ sgetLine = do
                     putChar '_'
                     xs <- sgetLine
                     return (x:xs)
-
-
--- Get char from keyboard without echoing it to the screen.
-getCh:: IO Char
-getCh = do
-            hSetEcho stdin False
-            x <- getChar
-            hSetEcho stdin True
-            return x
 
 
 play :: String -> IO ()

@@ -2,6 +2,8 @@ module Life where
 
 import Control.Concurrent
 
+import Lib (Pos, cls, writeat, goto)
+
 -- Game of Life
 --
 
@@ -23,23 +25,6 @@ type Board = [Pos]
 glider :: Board
 glider = [(4,2),(2,3),(4,3),(3,4),(4,4)]
 
-
--- Clear screen.
-cls :: IO ()
-cls = putStr "\ESC[2J"
-
--- Position of a character on the screen.
-type Pos = (Int,Int)
-
--- Write a string at a given position.
-writeat :: Pos -> String -> IO()
-writeat p xs = do
-                    goto p
-                    putStr xs
-
--- Move to given position.
-goto :: Pos -> IO ()
-goto (x,y) = putStr ("\ESC[" ++ show y ++ ";" ++ show x ++"H")
 
 -- Display a board with living cells on the screen.
 showcells :: Board -> IO ()
