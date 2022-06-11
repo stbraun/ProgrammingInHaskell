@@ -59,3 +59,12 @@ instance Functor Tree where
     fmap g (Leaf x) = Leaf (g x)
     fmap g (Node x l r) = Node (g x) (fmap g l) (fmap g r)
 
+
+instance Traversable Tree where
+    -- traverse :: Applicative f => (a -> f b) -> Tree a -> f (Tree b)
+    traverse g (Leaf x) = pure Leaf <*> g x
+    traverse g (Node x l r) = pure Node <*> g x <*> traverse g l <*> traverse g r
+
+-- example function to test traverse
+dec n = if n > 0 then Just (n-1) else Nothing
+

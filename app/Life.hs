@@ -2,7 +2,7 @@ module Life where
 
 import Control.Concurrent
 
-import Lib (Pos, cls, writeat, goto)
+import TerminalIO (Pos, cls, writeat, goto)
 
 -- Game of Life
 --

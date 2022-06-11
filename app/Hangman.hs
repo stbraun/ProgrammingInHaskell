@@ -2,7 +2,7 @@ module Hangman where
 
 import System.IO
 
-import Lib (getCh)
+import TerminalIO (getCh)
 
 hangman :: IO ()
 hangman = do

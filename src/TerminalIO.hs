@@ -1,9 +1,6 @@
-module Lib where
+module TerminalIO where
 
 import System.IO
-
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
 
 
 -- Position of a character on the screen.

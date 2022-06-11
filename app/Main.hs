@@ -1,6 +1,7 @@
 module Main where
 
-import Lib
+import Nim
 
 main :: IO ()
-main = someFunc
+main = nim
+

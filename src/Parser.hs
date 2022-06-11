@@ -3,7 +3,7 @@ module Parser where
 import Control.Applicative
 import Data.Char
 
-import Lib (writeat, getCh, beep, goto, cls)
+import TerminalIO (writeat, getCh, beep, goto, cls)
 
 
 newtype Parser a = P (String -> [(a,String)])
@@ -14,7 +14,7 @@ parse :: Parser a -> String -> [(a,String)]
 parse (P p) inp = p inp
 
 
--- A parsing primitivr, which fails for an empty input string,
+-- A parsing primitive, which fails for an empty input string,
 -- and succeeds with the first character as the result value otherwise.
 item :: Parser Char
 item = P (\inp -> case inp of
