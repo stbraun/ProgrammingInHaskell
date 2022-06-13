@@ -12,6 +12,7 @@ module Morse where
 
 import qualified Data.Map as Map
 
+
 -- |
 -- Tokens of a morse stream.
 data Token = Dot | Sep | Dash | LetterSep | WordSep
@@ -84,4 +85,20 @@ translate (c:rest) = pure (++) <*> mapCharToToken c <*> (translate rest)
         mapCharToToken :: Char -> Maybe [Token]
         mapCharToToken c = Map.lookup c alphabet
 
+
+-- |
+-- Print morse code.
+printMorseCode :: Maybe [Token] -> IO ()
+printMorseCode Nothing = return ()
+printMorseCode (Just []) = putStrLn "stop"
+printMorseCode (Just (t:ts)) = do
+        printToken t
+        printMorseCode (Just ts)
+    where
+        printToken t
+            | t == Dot = putStr "o"
+            | t == Dash = putStr "---"
+            | t == Sep = putStr "."
+            | t == LetterSep = putStr "..."
+            | t == WordSep = putStrLn "...."
 
