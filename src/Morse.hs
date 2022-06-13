@@ -78,22 +78,26 @@ durations = Map.fromList [
 
 -- |
 -- Translate a string into a list of morse tokens.
-translate :: String -> Maybe [Token]
-translate "" = Just []
+translate :: String -> Either String [Token]
+translate "" = Right []
 translate (c:rest) = pure (++) <*> mapCharToToken c <*> (translate rest)
     where
-        mapCharToToken :: Char -> Maybe [Token]
-        mapCharToToken c = Map.lookup c alphabet
+        mapCharToToken :: Char -> Either String [Token]
+        mapCharToToken c = convert (Map.lookup c alphabet)
+            where
+                convert :: Maybe [Token] -> Either String [Token]
+                convert Nothing = Left ("Unknown character: " ++ [c])
+                convert (Just ts) = Right ts
 
 
 -- |
 -- Print morse code.
-printMorseCode :: Maybe [Token] -> IO ()
-printMorseCode Nothing = return ()
-printMorseCode (Just []) = putStrLn "stop"
-printMorseCode (Just (t:ts)) = do
+printMorseCode :: Either String [Token] -> IO ()
+printMorseCode (Left msg) = putStrLn msg
+printMorseCode (Right []) = putStrLn "stop"
+printMorseCode (Right (t:ts)) = do
         printToken t
-        printMorseCode (Just ts)
+        printMorseCode (Right ts)
     where
         printToken t
             | t == Dot = putStr "o"
