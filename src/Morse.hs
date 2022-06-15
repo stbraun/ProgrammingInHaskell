@@ -11,6 +11,7 @@
 module Morse where
 
 import qualified Data.Map as Map
+import Data.Char (toUpper)
 
 
 -- |
@@ -83,7 +84,7 @@ translate "" = Right []
 translate (c:rest) = pure (++) <*> mapCharToToken c <*> (translate rest)
     where
         mapCharToToken :: Char -> Either String [Token]
-        mapCharToToken c = convert (Map.lookup c alphabet)
+        mapCharToToken c = convert (Map.lookup (toUpper c) alphabet)
             where
                 convert :: Maybe [Token] -> Either String [Token]
                 convert Nothing = Left ("Unknown character: " ++ [c])
