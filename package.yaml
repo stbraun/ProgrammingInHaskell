@@ -22,7 +22,7 @@ description:         Please see the README on GitHub at <https://github.com/stbr
 dependencies:
 - base >= 4.7 && < 5
 - containers
-- honk
+- directory
 
 library:
   source-dirs: src
@@ -31,13 +31,17 @@ executables:
   ProgrammingInHaskell-exe:
     main:                Main.hs
     source-dirs:         app
+    # other-modules:      []
     ghc-options:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
     - ProgrammingInHaskell
-
+  Traverse:
+    main:               Main.hs
+    source-dirs:        app/traverse
+    other-modules:      []
 
 tests:
   ProgrammingInHaskell-test:
