@@ -10,8 +10,16 @@ import Control.Monad     (join, void, when)
 import Data.Foldable     (for_)
 import Data.IORef        (modifyIORef, newIORef, readIORef, writeIORef)
 import Data.List         (isSuffixOf)
+import qualified Data.Map as Map
 import System.Directory  (canonicalizePath, doesDirectoryExist, doesFileExist, listDirectory)
 import qualified Data.Set as Set (empty, insert, member)
+import qualified Data.Text as Text
+import qualified Data.Text.IO as TextIO
+import Text.Printf (printf)
+
+
+import Metrics
+
 
 dropSuffix :: String -> String -> String
 dropSuffix suffix s
@@ -50,8 +58,8 @@ naiveTraversal rootPath action = do
 
 -- |
 -- More efficient directory traversal handling also circular references.
-traverseDirectory :: FilePath -> (FilePath -> IO ()) -> IO ()
-traverseDirectory rootPath action = do
+traverseDirectory :: Metrics -> FilePath -> (FilePath -> IO ()) -> IO ()
+traverseDirectory metrics rootPath action = do
     -- Keep reference to all paths already seen in a set.
     seenRef <- newIORef Set.empty
     let
@@ -62,14 +70,15 @@ traverseDirectory rootPath action = do
         addDirectoryToSeen canonicalPath = do
             modifyIORef seenRef $ Set.insert canonicalPath
 
-        traverseSubdirectory subdirPath = do
+        traverseSubdirectory subdirPath =
+          timeFunction metrics "traverseSubdirectory" $ do
             contents <- listDirectory subdirPath
             for_ contents $ \file' ->
-                handle @IOException (\_ -> pure ()) $ do
+                handle @IOException (\ex -> putStrLn (show ex) >> tickFailure metrics) $ do
                     let file = subdirPath <> "/" <> file'
                     canonicalPath <- canonicalizePath file
                     classification <- classifyFile canonicalPath
-                    case classification of
+                    result <- case classification of
                       FileTypeOther -> pure ()
                       FileTypeRegularFile -> action file
                       FileTypeDirectory -> do
@@ -77,22 +86,45 @@ traverseDirectory rootPath action = do
                         when (not alreadyProcessed) $ do
                           addDirectoryToSeen file
                           traverseSubdirectory file
+                    tickSuccess metrics
+                    pure result
     traverseSubdirectory (dropSuffix "/" rootPath)
 
 
-traverseDirectory' :: FilePath -> (FilePath -> a) -> IO [a]
-traverseDirectory' rootPath action = do
+traverseDirectory' :: Metrics -> FilePath -> (FilePath -> a) -> IO [a]
+traverseDirectory' metrics rootPath action = do
     -- Keep reference to list of result items.
     resultsRef <- newIORef []
-    traverseDirectory rootPath $ \file -> do
+    traverseDirectory metrics rootPath $ \file -> do
         modifyIORef resultsRef (action file :)
     readIORef resultsRef
 
 
-main = do
-    files <- traverseDirectory' "./" (\p -> p)
-    mapM putStrLn files
-    putStrLn $ "Number of items: " <> show (length files)
-    return ()
+directorySummaryWithMetrics :: FilePath -> IO ()
+directorySummaryWithMetrics root = do
+    metrics <- newMetrics
+    histogramRef <- newIORef Map.empty
+    traverseDirectory metrics root $ \file -> do
+        putStrLn $ file <> ":"
+        contents <- timeFunction metrics "TextIO.readFile" $ TextIO.readFile file
+        timeFunction metrics "wordCount" $
+            let wordCount = length $ Text.words contents
+            in putStrLn $ "    word count: " <> show wordCount
+        timeFunction metrics "histogram" $ do
+            oldHistogram <- readIORef histogramRef
+            let
+                addCharToHistogram :: Map.Map Char Int -> Char -> Map.Map Char Int
+                addCharToHistogram histogram letter =
+                    Map.insertWith (+) letter 1 histogram
+                newHistogram = Text.foldl' addCharToHistogram oldHistogram contents
+            writeIORef histogramRef newHistogram
+    histogram <- readIORef histogramRef
+    putStrLn "Histogram Data:"
+    for_ (Map.toList histogram) $ \(letter, count) ->
+        putStrLn $ printf "    %c: %d" letter count
+    displayMetrics metrics
 
+
+main = do
+    directorySummaryWithMetrics "./"
 

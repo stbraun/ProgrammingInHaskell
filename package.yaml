@@ -24,6 +24,7 @@ dependencies:
 - containers
 - directory
 - time
+- text
 
 library:
   source-dirs: src
@@ -43,6 +44,8 @@ executables:
     main:               Main.hs
     source-dirs:        app/traverse
     other-modules:      []
+    dependencies:
+    - ProgrammingInHaskell
 
 tests:
   ProgrammingInHaskell-test:

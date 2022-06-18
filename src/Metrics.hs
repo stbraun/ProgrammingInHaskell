@@ -53,20 +53,7 @@ timeFunction (Metrics metrics) actionName action = do
     pure result
 
 
-printMetrics :: Metrics -> IO ()
-printMetrics (Metrics metrics) =
+displayMetrics :: Metrics -> IO ()
+displayMetrics (Metrics metrics) =
     pure metrics >>= readIORef >>= print
-
-
-successfullyPrintHello :: Metrics -> IO ()
-successfullyPrintHello metrics = do
-    print "Hello"
-    tickSuccess metrics
-
-
-printHelloAndMetrics = do
-    metrics <- newMetrics
-    timeFunction metrics "successfullyPrintHello" $ do
-        successfullyPrintHello metrics
-    printMetrics metrics
 
