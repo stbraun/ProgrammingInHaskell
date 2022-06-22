@@ -25,6 +25,8 @@ dependencies:
 - directory
 - time
 - text
+- bytestring
+- base64-bytestring
 
 library:
   source-dirs: src
