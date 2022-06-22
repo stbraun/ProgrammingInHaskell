@@ -5,10 +5,11 @@
 --
 module Main where
 
+import System.Environment (getArgs)
 import Control.Exception (IOException, handle)
 import Control.Monad     (join, void, when)
 import Data.Foldable     (for_)
-import Data.IORef        (modifyIORef, newIORef, readIORef, writeIORef)
+import Data.IORef        (modifyIORef, modifyIORef', newIORef, readIORef, writeIORef)
 import Data.List         (isSuffixOf)
 import qualified Data.Map as Map
 import System.Directory  (canonicalizePath, doesDirectoryExist, doesFileExist, listDirectory)
@@ -117,7 +118,8 @@ directorySummaryWithMetrics root = do
                 addCharToHistogram histogram letter =
                     Map.insertWith (+) letter 1 histogram
                 newHistogram = Text.foldl' addCharToHistogram oldHistogram contents
-            writeIORef histogramRef newHistogram
+            -- Evaluate newHistogram strictly to avoid space leaks and performance hits.
+            writeIORef histogramRef $! newHistogram
     histogram <- readIORef histogramRef
     putStrLn "Histogram Data:"
     for_ (Map.toList histogram) $ \(letter, count) ->
@@ -126,5 +128,6 @@ directorySummaryWithMetrics root = do
 
 
 main = do
-    directorySummaryWithMetrics "./"
+    arg <- getArgs
+    directorySummaryWithMetrics (head arg)
 

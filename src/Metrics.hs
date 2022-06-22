@@ -45,7 +45,7 @@ timeFunction (Metrics metrics) actionName action = do
     modifyIORef metrics $ \oldMetrics ->
       let
         oldDurationValue = fromMaybe 0 $ Map.lookup actionName (callDuration oldMetrics)
-        runDuration = floor . nominalDiffTimeToSeconds $ diffUTCTime endTime startTine
+        runDuration = floor . (*1000) . nominalDiffTimeToSeconds $ diffUTCTime endTime startTine
         newDurationValue = oldDurationValue + runDuration
       in oldMetrics {
           callDuration = Map.insert actionName newDurationValue $ callDuration oldMetrics
