@@ -27,6 +27,7 @@ dependencies:
 - text
 - bytestring
 - base64-bytestring
+- process
 
 library:
   source-dirs: src
@@ -45,6 +46,12 @@ executables:
   Traverse:
     main:               Main.hs
     source-dirs:        app/traverse
+    other-modules:      []
+    dependencies:
+    - ProgrammingInHaskell
+  Morse:
+    main:               Main.hs
+    source-dirs:        app/morse
     other-modules:      []
     dependencies:
     - ProgrammingInHaskell

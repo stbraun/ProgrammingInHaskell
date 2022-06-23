@@ -8,10 +8,16 @@
 -- 5. The space between words is seven units.
 --
 
-module Morse where
+module Morse
+    ( translate
+    , printMorseCode
+    , createSoundSamples
+    ) where
 
 import qualified Data.Map as Map
 import Data.Char (toUpper)
+
+import Sound
 
 
 -- |
@@ -76,6 +82,12 @@ durations = Map.fromList [
             , (WordSep, 4)  -- = 7 - LetterSep
             ]
 
+getDurationFactor :: Token -> Int
+getDurationFactor t = convert $ Map.lookup t durations
+    where
+        convert (Just d) = d
+        convert Nothing = 0
+
 
 -- |
 -- Translate a string into a list of morse tokens.
@@ -106,4 +118,49 @@ printMorseCode (Right (t:ts)) = do
             | t == Sep = putStr "."
             | t == LetterSep = putStr "..."
             | t == WordSep = putStrLn "...."
+
+
+-- Generate audio signal.
+
+frequency :: Frequency
+frequency = pitchStandard * 2
+
+silence :: Frequency
+silence = 0.0
+
+dotDuration :: Duration
+dotDuration = 0.1
+
+scaleDuration :: Token -> Duration
+scaleDuration token = dotDuration * (fromIntegral $ getDurationFactor token)
+
+dashDuration = scaleDuration Dash
+sepDuration = scaleDuration Sep
+letterSepDuration = scaleDuration LetterSep
+wordSepDuration = scaleDuration WordSep
+
+
+dotSamples :: [Sample]
+dotSamples = tone frequency dotDuration
+
+dashSamples :: [Sample]
+dashSamples = tone frequency dashDuration
+
+sepSamples = tone silence sepDuration
+letterSepSamples = tone silence letterSepDuration
+wordSepSamples = tone silence wordSepDuration
+
+
+createSoundSamples :: [Sample] -> Either String [Token] -> [Sample]
+createSoundSamples samples (Left _) = samples
+createSoundSamples samples (Right []) = samples
+createSoundSamples samples (Right (t:ts)) = do
+        createSoundSamples (addSamples t) (Right ts)
+    where
+        addSamples t
+            | t == Dot = samples ++ dotSamples
+            | t == Dash = samples ++ dashSamples
+            | t == Sep =  samples ++ sepSamples
+            | t == LetterSep = samples ++ letterSepSamples
+            | t == WordSep = samples ++ wordSepSamples
 
