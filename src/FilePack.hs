@@ -7,8 +7,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
 
--- |
--- File archiving library.
+-- | File archiving library.
 module FilePack where
 
 import qualified Data.Text as Text
@@ -155,8 +154,7 @@ instance Encode FilePack where
     encode (FilePack p) = encode p
 
 
--- |
--- Convert a 16bit word into 4 bytes.
+-- | Convert a 16bit word into 4 bytes.
 word16ToBytes :: Word16 -> (Word8, Word8)
 word16ToBytes word =
     let a = fromIntegral $ 0xff .&. word
@@ -164,8 +162,7 @@ word16ToBytes word =
     in (a, b)
 
 
--- |
--- Create a Word16 from a tuple of Word8.
+-- | Create a Word16 from a tuple of Word8.
 word16FromBytes :: (Word8, Word8) -> Word16
 word16FromBytes (a, b) =
     let a' = fromIntegral a
@@ -182,24 +179,21 @@ bytestringToWord16 bytestring =
             in Left ("Expecting 2 bytes but got " <> l)
 
 
--- |
--- Create new ByteString from Word16.
+-- | Create new ByteString from Word16.
 word16ToByteSring :: Word16 -> BS.ByteString
 word16ToByteSring word =
     let (a, b) = word16ToBytes word
     in BS.pack [a, b]
 
 
--- |
--- Cons Word16 to the beginning of an existing ByteString.
+-- | Cons Word16 to the beginning of an existing ByteString.
 consWord16 :: Word16 -> BS.ByteString -> BS.ByteString
 consWord16 word bytestring =
     let packedWord = word16ToByteSring word
     in packedWord <> bytestring
 
 
--- |
--- Convert a 32bit word into 4 bytes.
+-- | Convert a 32bit word into 4 bytes.
 word32ToBytes :: Word32 -> (Word8, Word8, Word8, Word8)
 word32ToBytes word =
     let a = fromIntegral $ 0xff .&. word
@@ -209,8 +203,7 @@ word32ToBytes word =
     in (a, b, c, d)
 
 
--- |
--- Create a Word32 from a tuple of Word8.
+-- | Create a Word32 from a tuple of Word8.
 word32FromBytes :: (Word8, Word8, Word8, Word8) -> Word32
 word32FromBytes (a, b, c, d) =
     let a' = fromIntegral a
@@ -229,28 +222,18 @@ bytestringToWord32 bytestring =
             in Left ("Expecting 4 bytes but got " <> l)
 
 
--- |
--- Create new ByteString from Word32.
+-- | Create new ByteString from Word32.
 word32ToByteSring :: Word32 -> BS.ByteString
 word32ToByteSring word =
     let (a, b, c, d) = word32ToBytes word
     in BS.pack [a, b, c, d]
 
 
--- |
--- Cons Word32 to the beginning of an existing ByteString.
+-- | Cons Word32 to the beginning of an existing ByteString.
 consWord32 :: Word32 -> BS.ByteString -> BS.ByteString
 consWord32 word bytestring =
     let packedWord = word32ToByteSring word
     in packedWord <> bytestring
-
-
--- packFiles :: FilePack -> BS.ByteString
--- packFiles filePack = B64.encode . BC.pack . show $ filePack
-
-
--- unpackFiles :: BS.ByteString -> Either String FilePack
--- unpackFiles serializedData = B64.decode serializedData >>= readEither . BC.unpack
 
 
 -- Test code
