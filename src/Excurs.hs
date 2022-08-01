@@ -32,6 +32,8 @@ data LeakStat = LeakStat
     { perHour :: Double
     , perDay :: Double
     , perWeek :: Double
+    , perMonth :: Double -- 30days/month
+    , perYear :: Double -- 12months
     }
 
 -- |
@@ -41,21 +43,25 @@ data LeakStat = LeakStat
 -- operations per second - throughput during test
 -- returns leak in MB per (hour, day, week)
 leakOverTime :: Double -> Double -> LeakStat
-leakOverTime leak hours = LeakStat hour day week
+leakOverTime leak hours = LeakStat hour day week month year
     where
         hour = leak / hours
         day  = hour * 24
         week = day * 7
+        month = day * 30
+        year = month * 12
 
 reportOnLeak :: Double -> Double -> Double -> IO ()
 reportOnLeak leak hours operations = do
     putStrLn "--- Memory Leak ---"
     printf "Leak of %.2fMB over %.1fh at %.1fops/s\n" leak hours operations
     printf "Operations per day: %.0f\n" (operations * 3600 * 24)
-    printf "Leak per op:   %7.1f B\n" $ leakPerOp leak hours operations
-    printf "Leak per hour: %7.2f MB\n" (perHour leakStats)
-    printf "Leak per day:  %7.2f MB\n" (perDay leakStats)
-    printf "Leak per week: %7.2f MB\n" (perWeek leakStats)
+    printf "Leak per op:    %7.2f B\n" $ leakPerOp leak hours operations
+    printf "Leak per hour:  %7.2f MB\n" (perHour leakStats)
+    printf "Leak per day:   %7.2f MB\n" (perDay leakStats)
+    printf "Leak per week:  %7.2f MB\n" (perWeek leakStats)
+    printf "Leak per month: %7.2f MB\n" (perMonth leakStats)
+    printf "Leak per year:  %7.2f MB\n" (perYear leakStats)
     where
         leakStats = leakOverTime leak hours
 
@@ -65,9 +71,20 @@ evalLeak privbytes hours opsPerSec = reportOnLeak leak duration opsPerSec
         leak = (head . reverse) privbytes - (head privbytes)
         duration = (head . reverse) hours - (head hours)
 
+printRawLeakData :: [Double] -> [Double] -> IO ()
+printRawLeakData privbytes hours = do
+    printf "Time privBytes [MB]\n"
+    printf "-------------------\n"
+    printData rawData
+    where
+        printData d = putStrLn $ (Text.unpack
+                                    . Text.intercalate (Text.pack "\n")
+                                    . map Text.pack
+                                    . map show) d
+        rawData = [(hour, mbyte) | (hour, mbyte) <- zip durations privbytes]
 
-durations = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 30, 36] :: [Double]
-privbytes = [200.5, 201.0, 201.4, 202.0, 202.3, 202.6, 202.9, 203.7, 204.0, 204.3, 204.6, 205.0, 207.2, 209.1] :: [Double]
+durations = [12, 13, 14, 15, 16, 17, 18] :: [Double]
+privbytes = [178, 178, 179, 179, 179, 179, 179] :: [Double]
 
 
 -- | Logistic map.
