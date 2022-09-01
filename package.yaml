@@ -55,6 +55,12 @@ executables:
     other-modules:      []
     dependencies:
     - ProgrammingInHaskell
+  Days:
+    main:               Main.hs
+    source-dirs:        app/days
+    other-modules:      []
+    dependencies:
+    - ProgrammingInHaskell
 
 tests:
   ProgrammingInHaskell-test:

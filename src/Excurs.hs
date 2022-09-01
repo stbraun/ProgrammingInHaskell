@@ -83,8 +83,8 @@ printRawLeakData privbytes hours = do
                                     . map show) d
         rawData = [(hour, mbyte) | (hour, mbyte) <- zip durations privbytes]
 
-durations = [12, 13, 14, 15, 16, 17, 18] :: [Double]
-privbytes = [178, 178, 179, 179, 179, 179, 179] :: [Double]
+durations = [12, 13, 14, 15, 16, 17] :: [Double]
+privbytes = [180.9, 181.0, 180.9, 180.9, 180.9, 180.9] :: [Double]
 
 
 -- | Logistic map.
