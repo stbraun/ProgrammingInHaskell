@@ -17,10 +17,20 @@ days end = do
     now <- Cl.getCurrentTime
     let today = Cl.utctDay now
         diffDays = Cal.diffDays end today
+        remWorkDays = workDays diffDays
+        remVacancies = remWorkDays - vacationDays
 
-    printf "Days from %s to %s -> %d (work days %d)\n" (show today) (show end) diffDays (workDays diffDays)
+    printf "Days from %s to %s -> %d (work days: %d) (after vacancies: %d)\n" (show today) (show end) diffDays remWorkDays remVacancies
 
 -- | Approximate number of workdays for a given span of days.
 workDays :: Integer -> Integer
 workDays days = days * 5 `div` 7
+
+-- | Approximate number of vacation days
+vacationDays :: Integer
+vacationDays = y2024 + y2023 + y2022
+    where
+        y2022 = 21
+        y2023 = 30
+        y2024 = 10 * 30 `div` 12
 
