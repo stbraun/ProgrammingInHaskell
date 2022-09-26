@@ -2,5 +2,7 @@
 /dist-newstyle/
 **/*~
 **/*.vim
+**/*.swp
+**/*.DS_Store
 /ProgrammingInHaskell.cabal
 /sound.bin
