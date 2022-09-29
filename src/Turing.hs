@@ -29,6 +29,7 @@ turing ('0':xs) Even = turing "0" Halt
 turing ('1':xs) Even = turing xs Odd
 turing ('0':xs) Odd = turing "1" Halt
 turing ('1':xs) Odd = turing xs Even
+turing (x:xs) _ = invalid $ Just $ "Unexpected char '" <> [x] <> "'."
 
 -- | Print error message for invalid argument.
 -- Takes an optional message prefix.
