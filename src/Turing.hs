@@ -1,4 +1,6 @@
-module Turing where
+module Turing (
+        runTuring
+    ) where
 
 
 data State = Start | Even | Odd | Halt
@@ -14,17 +16,27 @@ runTuring band = turing band Start
 
 turing :: String -> State -> IO ()
 turing [] _ = do
-        putStrLn "No data. Expected a string starting with 0, sequence of 1, and a 0."
+        invalid Nothing
         return ()
 turing band Halt = do
         putStrLn band
         return ()
 turing ('1':xs) Start = do
-        putStrLn $ "Invalid data: " <> ('1':xs)
+        invalid (Just $ "Invalid data: " <> ('1':xs) <> ".")
         return ()
 turing ('0':xs) Start = turing xs Even
 turing ('0':xs) Even = turing "0" Halt
 turing ('1':xs) Even = turing xs Odd
 turing ('0':xs) Odd = turing "1" Halt
 turing ('1':xs) Odd = turing xs Even
+
+-- | Print error message for invalid argument.
+-- Takes an optional message prefix.
+invalid :: Maybe String -> IO ()
+invalid (Just prefix) = putStrLn $ prefix <> " " <> expected
+invalid Nothing = putStrLn expected
+
+-- | Help message for expected argument.
+expected :: String
+expected = "Expected a string starting with 0, sequence of 1, and a trailing 0, e.g., 01110."
 
