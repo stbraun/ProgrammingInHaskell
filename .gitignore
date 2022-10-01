@@ -4,5 +4,7 @@
 **/*.vim
 **/*.swp
 **/*.DS_Store
+.env-sb
 /ProgrammingInHaskell.cabal
 /sound.bin
+
