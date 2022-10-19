@@ -42,5 +42,5 @@ collatz n = let iterations = collatz' n 0
          in printf "collatz(%d) terminated after %d iterations\n" n iterations
 
 coll :: [Int] -> IO ()
-coll ns = putStrLn $ (Text.unpack . Text.intercalate (Text.pack "\n") . map Text.pack . map show)  [(n, collatz' n 0) | n <- ns]
+coll ns = putStrLn $ (Text.unpack . Text.intercalate (Text.pack "\n") . map (Text.pack . show))  [(n, collatz' n 0) | n <- ns]
 
