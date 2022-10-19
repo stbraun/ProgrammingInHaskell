@@ -36,7 +36,6 @@ collatz' n i
     | n < 1 = error "Input must be > 0"
     | even n = collatz' (n `div` 2) (i +1)
     | otherwise = collatz' ( (3 * n + 1) `div` 2) (i + 1)
-    where even n = n `mod` 2 == 0
 
 collatz :: Int -> IO ()
 collatz n = let iterations = collatz' n 0
