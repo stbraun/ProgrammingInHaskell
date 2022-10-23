@@ -26,6 +26,9 @@ glider :: Board
 glider = [(4,2),(2,3),(4,3),(3,4),(4,4)]
 
 
+main :: IO ()
+main = life glider
+
 -- Display a board with living cells on the screen.
 showcells :: Board -> IO ()
 showcells b= sequence_ [writeat p "O" | p <- b]
