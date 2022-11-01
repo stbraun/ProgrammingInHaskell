@@ -28,6 +28,8 @@ dependencies:
 - bytestring
 - base64-bytestring
 - process
+- stm
+- random
 
 library:
   source-dirs: src
@@ -43,6 +45,11 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - ProgrammingInHaskell
+  Santa:
+    main:               Main.hs
+    source-dirs:        app/santa
+    other-modules:      []
+    dependencies:       []
   Traverse:
     main:               Main.hs
     source-dirs:        app/traverse
