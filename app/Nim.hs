@@ -29,6 +29,11 @@ type Board = [Int]
 initial :: Board
 initial = [5,4,3,2,1]
 
+
+main :: IO ()
+main = nim
+
+
 -- A game is being finished when all rows have no stars left.
 finished :: Board -> Bool
 finished = all (== 0)

@@ -1,0 +1,10 @@
+# Build and run pih.
+version: "3.9"
+services:
+  pih_shell:
+    build: ./
+    env_file:
+      - ./.env-sb
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+

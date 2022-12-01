@@ -4,6 +4,12 @@ import System.IO
 
 import TerminalIO (getCh)
 
+
+main :: IO ()
+main = do
+        hangman
+
+
 hangman :: IO ()
 hangman = do
             putStrLn "Think of a word:"
@@ -40,5 +46,4 @@ play word = do
 
 match :: String -> String -> String
 match xs ys = [if elem x ys then x else '-' | x <- xs]
-
 
