@@ -39,7 +39,7 @@ vacationDays = y2024 + y2023 + y2022
 holidays :: Integer
 holidays = y2022 + y2023 + y2024
     where
-        y2022 = 1
+        y2022 = 0
         y2023 = 10
         y2024 = 5
- 
+
