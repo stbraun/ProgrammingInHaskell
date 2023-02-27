@@ -1,6 +1,6 @@
 module Sound where
 
-import qualified Data.ByteString.Lazy as B
+import qualified Data.ByteString.Lazy as BL
 import qualified Data.ByteString.Builder as B
 import qualified Control.Concurrent as C
 import Data.Foldable
@@ -48,7 +48,7 @@ tone frequency duration = map (* volume) $ map sin $ map (* step) [0.0..sampleRa
 
 
 save :: FilePath -> [Sample] -> IO ()
-save filePath samples = B.writeFile filePath $ B.toLazyByteString $ fold $ map B.floatLE samples
+save filePath samples = BL.writeFile filePath $ B.toLazyByteString $ fold $ map B.floatLE samples
 
 
 -- | Play samples as audio.

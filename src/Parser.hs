@@ -262,7 +262,7 @@ eval xs = case parse expr xs of
     _         -> do beep
                     calc xs
 
--- Clear the display.
+-- Clear the display and run the calculator logic.
 clear :: IO ()
 clear = calc []
 
