@@ -39,13 +39,13 @@ tickFailure (Metrics metricsRef) =
 
 timeFunction ::  Metrics -> String -> IO a -> IO a
 timeFunction (Metrics metrics) actionName action = do
-    startTine <- getCurrentTime
+    startTime <- getCurrentTime
     result    <- action
     endTime   <- getCurrentTime
     modifyIORef metrics $ \oldMetrics ->
       let
         oldDurationValue = fromMaybe 0 $ Map.lookup actionName (callDuration oldMetrics)
-        runDuration = floor . (*1000) . nominalDiffTimeToSeconds $ diffUTCTime endTime startTine
+        runDuration = floor . (*1000) . nominalDiffTimeToSeconds $ diffUTCTime endTime startTime
         newDurationValue = oldDurationValue + runDuration
       in oldMetrics {
           callDuration = Map.insert actionName newDurationValue $ callDuration oldMetrics

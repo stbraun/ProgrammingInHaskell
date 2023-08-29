@@ -31,7 +31,7 @@ workDays days = days * 5 `div` 7
 vacationDays :: Integer
 vacationDays = y2024 + y2023
     where
-        y2023 = 30 - 5
+        y2023 = 30 - 5 - 15
         y2024 = 10 * 30 `div` 12
 
 -- | Approximate number of holidays
