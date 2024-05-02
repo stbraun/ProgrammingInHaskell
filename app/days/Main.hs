@@ -8,7 +8,7 @@ import Text.Printf
 
 main :: IO ()
 main =  do
-    let end = Cal.fromGregorian 2024 10 31
+    let end = Cal.fromGregorian 2024 10 30
     days end
 
 -- | Print workdays from current date to given date.
@@ -31,13 +31,13 @@ workDays days = days * 5 `div` 7
 vacationDays :: Integer
 vacationDays = y2024 + y2023
     where
-        y2023 = 30 - 5 - 15
+        y2023 = 30 - 5 - 15 - 5 - 5
         y2024 = 10 * 30 `div` 12
 
 -- | Approximate number of holidays
 holidays :: Integer
 holidays = y2023 + y2024
     where
-        y2023 = 3 -- 1.11., 25.12., 26.12.
-        y2024 = 8 -- 1.1., 12.2., 29.3., 1.4., 1.5., 9.5., 20.5., 3.10.
+        y2023 = 0 --
+        y2024 = 3 -- 9.5., 20.5., 3.10.
 
