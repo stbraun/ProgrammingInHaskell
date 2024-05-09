@@ -32,12 +32,12 @@ vacationDays :: Integer
 vacationDays = y2024 + y2023
     where
         y2023 = 30 - 5 - 15 - 5 - 5
-        y2024 = 10 * 30 `div` 12
+        y2024 = 10 * 30 `div` 12  -- 4d: 27.5.-31.5
 
 -- | Approximate number of holidays
 holidays :: Integer
 holidays = y2023 + y2024
     where
         y2023 = 0 --
-        y2024 = 3 -- 9.5., 20.5., 3.10.
+        y2024 = 3 -- 20.5., 30.5., 3.10.
 
