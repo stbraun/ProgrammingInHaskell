@@ -41,5 +41,5 @@ toDate = Cal.fromGregorian
 
 -- | Approximate number of vacation days
 vacationDays :: Int
-vacationDays = 25  -- 4d: 27.5.-31.5
+vacationDays = 25 - 4  -- 4d: 27.5.-31.5
 
