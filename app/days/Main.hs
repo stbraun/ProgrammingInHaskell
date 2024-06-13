@@ -43,7 +43,9 @@ numVacationDays first last = unplannedVacationDays + length (futureVacationDays 
 
 -- | List of planned vacation days
 plannedVacationDays :: [Cal.Day]
-plannedVacationDays = [toDate 2024 05 27, toDate 2024 05 28, toDate 2024 05 29, toDate 2024 05 31]
+plannedVacationDays = [toDate 2024 05 27, toDate 2024 05 28, toDate 2024 05 29, toDate 2024 05 31,
+                       toDate 2024 07 01, toDate 2024 07 02, toDate 2024 07 03, toDate 2024 07 04, toDate 2024 07 05,
+                       toDate 2024 07 08, toDate 2024 07 09, toDate 2024 07 10, toDate 2024 07 11, toDate 2024 07 12]
 
 -- | List of future and present vacation days.
 futureVacationDays :: Cal.Day -> Cal.Day -> [Cal.Day]
