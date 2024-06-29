@@ -26,7 +26,7 @@ days end = do
         numRemainingWorkdays = length workDays
         numRemainingVacationDays = numVacationDays today end
 
-    printf "Days from %s to %s -> %d (work days: %d) (after vacaction days (%d): %d)\n"
+    printf "Days from %s to %s -> %d (work days: %d) (after vaccation days (%d): %d)\n"
         (show today) (show end) numRemainingCalendardays numRemainingWorkdays
         numRemainingVacationDays (numRemainingWorkdays - numRemainingVacationDays)
     -- printf "Workdays: %s\n" (show workDays)
