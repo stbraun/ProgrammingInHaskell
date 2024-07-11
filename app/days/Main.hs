@@ -57,7 +57,7 @@ unplannedVacationDays = 25 - length plannedVacationDays  -- 4d: 27.5.-31.5
 -- | Filter for workdays in the given interval.
 filterWorkdays :: Cal.Day -> Cal.Day -> [Cal.Day] -> [Cal.Day]
 filterWorkdays first last = filter (`notElem` holidaysList) .
-        filter (\d -> Cal.Saturday /= Cal.dayOfWeek d && Cal.Sunday /= Cal.dayOfWeek d) .
+        filter (\d -> Cal.dayOfWeek d `notElem` [Cal.Saturday, Cal.Sunday]) .
         filter (last >=) .
         filter (first <=)
 
