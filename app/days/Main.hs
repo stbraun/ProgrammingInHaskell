@@ -29,7 +29,6 @@ days end = do
     printf "Days from %s to %s -> %d (work days: %d) (after vaccation days (%d): %d)\n"
         (show today) (show end) numRemainingCalendardays numRemainingWorkdays
         numRemainingVacationDays (numRemainingWorkdays - numRemainingVacationDays)
-    -- printf "Workdays: %s\n" (show workDays)
 
 
 -- | Provide a list of holidays.
@@ -58,8 +57,7 @@ unplannedVacationDays = 25 - length plannedVacationDays  -- 4d: 27.5.-31.5
 -- | Filter for workdays in the given interval.
 filterWorkdays :: Cal.Day -> Cal.Day -> [Cal.Day] -> [Cal.Day]
 filterWorkdays first last = filter (`notElem` holidaysList) .
-        filter (\d -> Cal.Saturday /= Cal.dayOfWeek d) .
-        filter (\d -> Cal.Sunday /= Cal.dayOfWeek d) .
+        filter (\d -> Cal.Saturday /= Cal.dayOfWeek d && Cal.Sunday /= Cal.dayOfWeek d) .
         filter (last >=) .
         filter (first <=)
 
