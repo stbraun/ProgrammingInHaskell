@@ -129,5 +129,8 @@ directorySummaryWithMetrics root = do
 
 main = do
     arg <- getArgs
-    directorySummaryWithMetrics (head arg)
+    directorySummaryWithMetrics (head' arg)
+    where
+        head' [] = error "argument missing"
+        head' (x:xs) = x
 

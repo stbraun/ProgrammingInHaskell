@@ -5,6 +5,7 @@
 module Leak where
 
 import qualified Data.Text as Text
+import qualified Data.List.NonEmpty as NonEmpty
 import Text.Printf
 
 -- | Calculate and report memory usage for a set of timespans.
@@ -12,11 +13,11 @@ import Text.Printf
 -- hours: array of time offsets between data points. E.g., [0, 1, 2.5].
 -- opsPerSec: number of operations per second averaged over the test run. E.g., 34.7.
 -- Prints a report with leakage per request/hour/day/week/month/year.
-evalLeak :: [Double] -> [Double] -> Double -> IO ()
-evalLeak privbytes hours opsPerSec = reportOnLeak leak duration opsPerSec
+evalLeak :: NonEmpty.NonEmpty Double -> NonEmpty.NonEmpty Double -> Double -> IO ()
+evalLeak privbytes hours = reportOnLeak leak duration
     where
-        leak = (head . reverse) privbytes - (head privbytes)
-        duration = (head . reverse) hours - (head hours)
+        leak = NonEmpty.last privbytes - NonEmpty.head privbytes
+        duration = NonEmpty.last hours - NonEmpty.head hours
 
 -- |
 -- memory leak per operation
@@ -73,8 +74,6 @@ printRawLeakData privbytes hours = do
     where
         printData d = putStrLn $ (Text.unpack
                                     . Text.intercalate (Text.pack "\n")
-                                    . map Text.pack
-                                    . map show) d
+                                    . map (Text.pack . show)) d
         rawData = [(hour, mbyte) | (hour, mbyte) <- zip hours privbytes]
-
 

@@ -186,10 +186,12 @@ minimax _ = error "unexpexted call"
 -- Get the best move for the player. This is given by the node below the root node
 -- that has the same label as the root node, i.e. the label of the current player.
 bestmove :: Grid -> Player -> Grid
-bestmove g p = head [g' | Node (g', p') _ <- ts, p' == best]
+bestmove g p = head' [g' | Node (g', p') _ <- ts, p' == best]
                 where
                     tree = prune depth (gametree g p)
                     Node (_, best) ts = minimax tree
+                    head' [] = error "No best move found."
+                    head' (x:xs) = x
 
 -- Main entry point.
 main :: IO ()

@@ -40,7 +40,7 @@ p7 :: Prop
 p7 = Equiv (Var 'A') (Var 'B')
 
 -- For evaluation we need to associate the variables of a proposition
--- with ist value. We declare a substition as a lookup table that
+-- with its value. We declare a substition as a lookup table that
 -- associates variable names to logical values.
 type Subst = Assoc Char Bool
 
@@ -95,4 +95,8 @@ type Assoc k v = [(k, v)]
 
 -- A function to lookup a value in an associative list.
 find :: Eq k => k -> Assoc k v -> v
-find k t = head [v | (k',v) <- t, k == k']
+find k t = head' [v | (k',v) <- t, k == k']
+    where
+        head' [] = error "No value found"
+        head' (x:xs) = x
+
