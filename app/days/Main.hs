@@ -23,7 +23,8 @@ main :: IO ()
 main =  do
     firstDay <- today
     let
-        daysOfYear = Cal.periodAllDays (Cal.dayPeriod lastDay :: Cal.Year) :: [Cal.Day]
+        -- daysOfYear = Cal.periodAllDays (Cal.dayPeriod lastDay :: Cal.Year) :: [Cal.Day]
+        daysOfYear = days (Cal.dayPeriod firstDay) (Cal.dayPeriod lastDay)
         workDays = filterWorkdays firstDay daysOfYear
         numRemainingCalendardays = Cal.diffDays lastDay firstDay
         numRemainingWorkdays = length workDays
@@ -32,7 +33,15 @@ main =  do
     printf "Days from %s to %s -> %d (work days: %d) (after vaccation days (%d): %d)\n"
         (show firstDay) (show lastDay) numRemainingCalendardays numRemainingWorkdays
         numRemainingVacationDays (numRemainingWorkdays - numRemainingVacationDays)
+    -- printf "DaysOfYears: %s\n" (show daysOfYear)
 
+
+-- | Generate a list of days for the given years and years in between.
+days :: Integer -> Integer -> [Cal.Day]
+days first last
+    | first == last = Cal.periodAllDays (Cal.dayPeriod (Cal.YearMonthDay first 01 01) :: Cal.Year) :: [Cal.Day]
+    | first < last = Cal.periodAllDays (Cal.dayPeriod (Cal.YearMonthDay first 01 01) :: Cal.Year) ++ days (first + 1) last
+    | otherwise = error "first year must be less or equal to last year"
 
 -- | Provide the current day.
 today :: IO Cal.Day
@@ -41,7 +50,10 @@ today = fmap Cl.utctDay Cl.getCurrentTime
 -- | Provide a list of holidays.
 holidaysList :: [Cal.Day]
 holidaysList = [toDate 2024 5 1, toDate 2024 5 9, toDate 2024 5 20, toDate 2024 5 30, toDate 2024 10 3,
-                toDate 2024 12 24, toDate 2024 12 25, toDate 2024 12 26, toDate 2024 12 31]
+                toDate 2024 12 24, toDate 2024 12 25, toDate 2024 12 26, toDate 2024 12 31,
+                toDate 2025 01 01, toDate 2025 03 03, toDate 2025 04 18, toDate 2025 04 21, toDate 2025 05 01,
+                toDate 2025 05 29, toDate 2025 06 09, toDate 2025 06 19, toDate 2025 10 03, toDate 2025 11 01,
+                toDate 2025 12 24, toDate 2025 12 25, toDate 2025 12 26, toDate 2025 12 31]
 
 -- | Number of open vacation days.
 numVacationDays :: Cal.Day -> Int
