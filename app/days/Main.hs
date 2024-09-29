@@ -6,9 +6,14 @@ import qualified Data.Time.Calendar as Cal
 import qualified Data.Time.Clock as Cl
 import Text.Printf
 
--- | Configure the last day of the relevant interval.
+-- | Configure date of retirement.
+dayBeforeRetirement :: Cal.Day
+dayBeforeRetirement = Cal.YearMonthDay  2024 10 31
+
+-- | Configure the last day of the relevant contract.
 lastDay :: Cal.Day
-lastDay = Cal.YearMonthDay  2024 10 31
+lastDay = dayBeforeRetirement
+--lastDay = Cal.YearMonthDay 2025 10 31
 
 -- | Configure the list of planned vacation days.
 plannedVacationDays :: [Cal.Day]
@@ -24,15 +29,15 @@ main :: IO ()
 main =  do
     firstDay <- today
     let
-        -- daysOfYear = Cal.periodAllDays (Cal.dayPeriod lastDay :: Cal.Year) :: [Cal.Day]
-        daysOfYear = days (Cal.dayPeriod firstDay) (Cal.dayPeriod lastDay)
-        workDays = filterWorkdays firstDay daysOfYear
-        numRemainingCalendardays = Cal.diffDays lastDay firstDay
-        numRemainingWorkdays = length workDays
+        -- daysOfYear = Cal.periodAllDays (Cal.dayPeriod dayBeforeRetirement :: Cal.Year) :: [Cal.Day]
+        daysOfYear = days (Cal.dayPeriod firstDay) (Cal.dayPeriod dayBeforeRetirement)
+        listOfWorkDays = filterWorkdays firstDay daysOfYear
+        numRemainingCalendardays = Cal.diffDays dayBeforeRetirement firstDay
+        numRemainingWorkdays = length listOfWorkDays
         numRemainingVacationDays = numVacationDays firstDay
 
     printf "Days from %s to %s -> %d (work days: %d) (after vaccation days (%d): %d)\n"
-        (show firstDay) (show lastDay) numRemainingCalendardays numRemainingWorkdays
+        (show firstDay) (show dayBeforeRetirement) numRemainingCalendardays numRemainingWorkdays
         numRemainingVacationDays (numRemainingWorkdays - numRemainingVacationDays)
     -- printf "DaysOfYears: %s\n" (show daysOfYear)
 
@@ -58,13 +63,11 @@ holidaysList = [toDate 2024 5 1, toDate 2024 5 9, toDate 2024 5 20, toDate 2024 
 
 -- | Number of open vacation days.
 numVacationDays :: Cal.Day -> Int
-numVacationDays first = unplannedVacationDays + length (futureVacationDays first)
+numVacationDays currentDay = unplannedVacationDays + length (futureVacationDays currentDay)
 
 -- | List of future and present vacation days.
--- futureVacationDays :: Cal.Day -> Cal.Day -> [Cal.Day]
--- futureVacationDays first last = (filter (first <=) . filter (last >=)) plannedVacationDays
 futureVacationDays :: Cal.Day -> [Cal.Day]
-futureVacationDays first = (filter (first <=) . filter (lastDay >=)) plannedVacationDays
+futureVacationDays currentDay = (filter (currentDay <=) . filter (dayBeforeRetirement >=)) plannedVacationDays
 
 -- | Number of unplanned vacation days
 unplannedVacationDays :: Int
@@ -72,10 +75,14 @@ unplannedVacationDays = 25 - length plannedVacationDays  -- 4d: 27.5.-31.5
 
 -- |  Filter for workdays in the given interval.
 filterWorkdays :: Cal.Day -> [Cal.Day] -> [Cal.Day]
-filterWorkdays first = filter (`notElem` holidaysList) .
-        filter (\d -> Cal.dayOfWeek d `notElem` [Cal.Saturday, Cal.Sunday]) .
-        filter (lastDay >=) .
-        filter (first <=)
+filterWorkdays currentDay = filter (`notElem` holidaysList) .
+        filter (\d -> Cal.dayOfWeek d `elem` workDays) .
+        filter (dayBeforeRetirement >=) .
+        filter (currentDay <=)
+        where
+            workDays :: [Cal.DayOfWeek]
+            workDays | currentDay <= dayBeforeRetirement = [Cal.Monday, Cal.Tuesday, Cal.Wednesday, Cal.Thursday, Cal.Friday]
+                     | otherwise = [Cal.Monday, Cal.Tuesday, Cal.Wednesday]
 
 -- | Create a date
 toDate :: Cal.Year -> Cal.MonthOfYear -> Cal.DayOfMonth  -> Cal.Day
