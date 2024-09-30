@@ -15,6 +15,10 @@ lastDay :: Cal.Day
 lastDay = dayBeforeRetirement
 --lastDay = Cal.YearMonthDay 2025 10 31
 
+-- | Provide the number of granted vacation days since and including 2024
+numberOfGrantedVacationDays :: Int
+numberOfGrantedVacationDays = 25
+
 -- | Provide the list of planned vacation days.
 plannedVacationDays :: [Cal.Day]
 plannedVacationDays = [toDate 2024 05 27, toDate 2024 05 28, toDate 2024 05 29, toDate 2024 05 31,
@@ -37,10 +41,9 @@ main :: IO ()
 main =  do
     firstDay <- today
     let
-        -- daysOfYear = Cal.periodAllDays (Cal.dayPeriod dayBeforeRetirement :: Cal.Year) :: [Cal.Day]
         daysOfYear = days (Cal.dayPeriod firstDay) (Cal.dayPeriod dayBeforeRetirement)
         listOfWorkDays = filterWorkdays firstDay daysOfYear
-        numRemainingCalendardays = Cal.diffDays dayBeforeRetirement firstDay
+        numRemainingCalendardays = 1 + Cal.diffDays dayBeforeRetirement firstDay
         numRemainingWorkdays = length listOfWorkDays
         numRemainingVacationDays = numVacationDays firstDay
 
@@ -52,9 +55,9 @@ main =  do
 
 -- | Generate a list of days for the given years and years in between.
 days :: Integer -> Integer -> [Cal.Day]
-days first last
-    | first == last = Cal.periodAllDays (Cal.dayPeriod (Cal.YearMonthDay first 01 01) :: Cal.Year) :: [Cal.Day]
-    | first < last = Cal.periodAllDays (Cal.dayPeriod (Cal.YearMonthDay first 01 01) :: Cal.Year) ++ days (first + 1) last
+days firstYear lastYear
+    | firstYear == lastYear = Cal.periodAllDays (Cal.dayPeriod (Cal.YearMonthDay firstYear 01 01) :: Cal.Year) :: [Cal.Day]
+    | firstYear < lastYear = Cal.periodAllDays (Cal.dayPeriod (Cal.YearMonthDay firstYear 01 01) :: Cal.Year) ++ days (firstYear + 1) lastYear
     | otherwise = error "first year must be less or equal to last year"
 
 -- | Provide the current day.
@@ -65,13 +68,13 @@ today = fmap Cl.utctDay Cl.getCurrentTime
 numVacationDays :: Cal.Day -> Int
 numVacationDays currentDay = unplannedVacationDays + length (futureVacationDays currentDay)
 
+-- | Number of unplanned vacation days
+unplannedVacationDays :: Int
+unplannedVacationDays = numberOfGrantedVacationDays - length plannedVacationDays
+
 -- | List of future and present vacation days.
 futureVacationDays :: Cal.Day -> [Cal.Day]
 futureVacationDays currentDay = (filter (currentDay <=) . filter (dayBeforeRetirement >=)) plannedVacationDays
-
--- | Number of unplanned vacation days
-unplannedVacationDays :: Int
-unplannedVacationDays = 25 - length plannedVacationDays  -- 4d: 27.5.-31.5
 
 -- |  Filter for workdays in the given interval.
 filterWorkdays :: Cal.Day -> [Cal.Day] -> [Cal.Day]
