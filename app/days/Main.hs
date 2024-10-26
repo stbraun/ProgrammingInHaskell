@@ -8,12 +8,11 @@ import Text.Printf
 
 -- | Configure date of retirement.
 dayBeforeRetirement :: Cal.Day
-dayBeforeRetirement = Cal.YearMonthDay  2024 10 31
+dayBeforeRetirement = Cal.YearMonthDay  2025 10 31
 
 -- | Configure the last day of the relevant contract.
 lastDay :: Cal.Day
 lastDay = dayBeforeRetirement
---lastDay = Cal.YearMonthDay 2025 10 31
 
 -- | Provide the number of granted vacation days since and including 2024
 numberOfGrantedVacationDays :: Int
