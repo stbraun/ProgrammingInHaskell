@@ -16,7 +16,7 @@ lastDay = dayBeforeRetirement
 
 -- | Provide the number of granted vacation days since and including 2024
 numberOfGrantedVacationDays :: Int
-numberOfGrantedVacationDays = 25
+numberOfGrantedVacationDays = 25 + 15
 
 -- | Provide the list of planned vacation days.
 plannedVacationDays :: [Cal.Day]
