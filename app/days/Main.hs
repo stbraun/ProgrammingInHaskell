@@ -8,11 +8,11 @@ import Text.Printf
 
 -- | Configure date of retirement.
 dayBeforeRetirement :: Cal.Day
-dayBeforeRetirement = Cal.YearMonthDay  2025 10 31
+dayBeforeRetirement = Cal.YearMonthDay  2024 10 31
 
 -- | Configure the last day of the relevant contract.
 lastDay :: Cal.Day
-lastDay = dayBeforeRetirement
+lastDay = toDate 2025 10 31
 
 -- | Provide the number of granted vacation days since and including 2024
 numberOfGrantedVacationDays :: Int
@@ -41,14 +41,14 @@ main :: IO ()
 main =  do
     firstDay <- today
     let
-        daysOfYear = days (Cal.dayPeriod firstDay) (Cal.dayPeriod dayBeforeRetirement)
+        daysOfYear = days (Cal.dayPeriod firstDay) (Cal.dayPeriod lastDay)
         listOfWorkDays = filterWorkdays firstDay daysOfYear
-        numRemainingCalendardays = 1 + Cal.diffDays dayBeforeRetirement firstDay
+        numRemainingCalendardays = 1 + Cal.diffDays lastDay firstDay
         numRemainingWorkdays = length listOfWorkDays
         numRemainingVacationDays = numVacationDays firstDay
 
     printf "Days from %s to %s -> %d (work days: %d) (after vaccation days (%d): %d)\n"
-        (show firstDay) (show dayBeforeRetirement) numRemainingCalendardays numRemainingWorkdays
+        (show firstDay) (show lastDay) numRemainingCalendardays numRemainingWorkdays
         numRemainingVacationDays (numRemainingWorkdays - numRemainingVacationDays)
     -- printf "DaysOfYears: %s\n" (show daysOfYear)
 
@@ -74,18 +74,19 @@ unplannedVacationDays = numberOfGrantedVacationDays - length plannedVacationDays
 
 -- | List of future and present vacation days.
 futureVacationDays :: Cal.Day -> [Cal.Day]
-futureVacationDays currentDay = (filter (currentDay <=) . filter (dayBeforeRetirement >=)) plannedVacationDays
+futureVacationDays currentDay = (filter (currentDay <=) . filter (lastDay >=)) plannedVacationDays
 
 -- |  Filter for workdays in the given interval.
 filterWorkdays :: Cal.Day -> [Cal.Day] -> [Cal.Day]
 filterWorkdays currentDay = filter (`notElem` holidaysList) .
-        filter (\d -> Cal.dayOfWeek d `elem` workDays) .
-        filter (dayBeforeRetirement >=) .
+        filter (\d -> Cal.dayOfWeek d `elem` workDays d) .
+        filter (lastDay >=) .
         filter (currentDay <=)
         where
-            workDays :: [Cal.DayOfWeek]
-            workDays | currentDay <= dayBeforeRetirement = [Cal.Monday, Cal.Tuesday, Cal.Wednesday, Cal.Thursday, Cal.Friday]
-                     | otherwise = [Cal.Monday, Cal.Tuesday, Cal.Wednesday]
+            workDays :: Cal.Day -> [Cal.DayOfWeek]
+            workDays today
+                | today <= dayBeforeRetirement = [Cal.Monday, Cal.Tuesday, Cal.Wednesday, Cal.Thursday, Cal.Friday]
+                | otherwise = [Cal.Monday, Cal.Tuesday, Cal.Wednesday]
 
 -- | Create a date
 toDate :: Cal.Year -> Cal.MonthOfYear -> Cal.DayOfMonth  -> Cal.Day
