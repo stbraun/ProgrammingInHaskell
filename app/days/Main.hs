@@ -15,8 +15,9 @@ lastDay :: Cal.Day
 lastDay = toDate 2025 10 31
 
 -- | Provide the number of granted vacation days since and including 2024
+-- Since 2024-11-01: 1.5 days / month, i.e. 3 days in 2024 and 15 days in 2025.
 numberOfGrantedVacationDays :: Int
-numberOfGrantedVacationDays = 25 + 15
+numberOfGrantedVacationDays = 25 + 18
 
 -- | Provide the list of planned vacation days.
 plannedVacationDays :: [Cal.Day]
