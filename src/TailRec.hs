@@ -1,5 +1,10 @@
 module TailRec where
 -- | Tail-recursive functions
+-- For a recursive function to be tail-recursive
+-- the recursive call must be the last expression in the function.
+-- This allows the compiler to optimize the function by reusing the
+-- same stack frame for each recursive call, instead of creating a new
+-- stack frame for each call. This is known as tail-call optimization.
 
 -- | Fibonacci function using tail recursion
 fib :: Integer -> Integer
