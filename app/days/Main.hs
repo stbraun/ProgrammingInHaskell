@@ -12,12 +12,13 @@ dayBeforeRetirement = Cal.YearMonthDay  2024 10 31
 
 -- | Configure the last day of the relevant contract.
 lastDay :: Cal.Day
-lastDay = toDate 2025 10 31
+lastDay = toDate 2025 06 30
 
 -- | Provide the number of granted vacation days since and including 2024
 -- Since 2024-11-01: 1.5 days / month, i.e. 3 days in 2024 and 15 days in 2025.
 numberOfGrantedVacationDays :: Int
-numberOfGrantedVacationDays = 25 + 18
+-- numberOfGrantedVacationDays = 25 + 18
+numberOfGrantedVacationDays = 25 + 10 -- ???
 
 -- | Provide the list of planned vacation days.
 plannedVacationDays :: [Cal.Day]
