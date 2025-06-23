@@ -29,7 +29,8 @@ plannedVacationDays = [toDate 2024 05 27, toDate 2024 05 28, toDate 2024 05 29, 
                        toDate 2024 09 30, toDate 2024 10 01, toDate 2024 10 02,
                        toDate 2024 10 23, toDate 2024 10 24, toDate 2024 10 25,
                        toDate 2024 12 23, toDate 2024 12 30,
-                       toDate 2025 03 10, toDate 2025 03 11, toDate 2025 03 12]
+                       toDate 2025 03 10, toDate 2025 03 11, toDate 2025 03 12,
+                       toDate 2025 06 30]
 
 -- | Provide the list of holidays.
 holidaysList :: [Cal.Day]
